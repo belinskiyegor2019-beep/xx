@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOAOVELO 203</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Exo+2:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #000000 0%, #0a1929 100%);
+            color: #00ff88;
+            font-family: 'Exo 2', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .liquid-glass {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 25% 25%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 75% 75%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+            opacity: 0.7;
+            z-index: -1;
+            animation: liquidFlow 15s infinite linear;
+            filter: blur(20px);
+        }
+        
+        @keyframes liquidFlow {
+            0% {
+                background-position: 0% 0%, 100% 100%;
+            }
+            50% {
+                background-position: 100% 100%, 0% 0%;
+            }
+            100% {
+                background-position: 0% 0%, 100% 100%;
+            }
+        }
+        
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            animation: scan 4s linear infinite;
+            z-index: 10;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 20;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+        
+        .loading-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1s;
+        }
+        
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loading-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: #00ff88;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            animation: loadProgress 2s forwards 1.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes loadProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        
+        .content {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        
+        .content.loaded {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #00ff88;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.7); }
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+        
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: transparent;
+            border: 2px solid #00ff88;
+            color: #00ff88;
+            padding: 12px 28px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            text-decoration: none;
+            display: inline-block;
+            min-width: 140px;
+        }
+        
+        .btn:nth-child(1) { animation: slideIn 0.6s forwards 2.5s; }
+        .btn:nth-child(2) { animation: slideIn 0.6s forwards 2.7s; }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .matrix-text {
+            position: absolute;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            opacity: 0.7;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); }
+            5% { clip: rect(12px, 9999px, 59px, 0); }
+            10% { clip: rect(48px, 9999px, 29px, 0); }
+            15% { clip: rect(42px, 9999px, 73px, 0); }
+            20% { clip: rect(63px, 9999px, 27px, 0); }
+            25% { clip: rect(34px, 9999px, 55px, 0); }
+            30% { clip: rect(86px, 9999px, 73px, 0); }
+            35% { clip: rect(20px, 9999px, 20px, 0); }
+            40% { clip: rect(26px, 9999px, 63px, 0); }
+            45% { clip: rect(85px, 9999px, 70px, 0); }
+            50% { clip: rect(66px, 9999px, 91px, 0); }
+            55% { clip: rect(73px, 9999px, 9px, 0); }
+            60% { clip: rect(47px, 9999px, 54px, 0); }
+            65% { clip: rect(6px, 9999px, 80px, 0); }
+            70% { clip: rect(63px, 9999px, 82px, 0); }
+            75% { clip: rect(47px, 9999px, 20px, 0); }
+            80% { clip: rect(56px, 9999px, 66px, 0); }
+            85% { clip: rect(37px, 9999px, 35px, 0); }
+            90% { clip: rect(59px, 9999px, 24px, 0); }
+            95% { clip: rect(67px, 9999px, 75px, 0); }
+            100% { clip: rect(36px, 9999px, 32px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 73px, 0); }
+            35% { clip: rect(37px, 9999px, 23px, 0); }
+            40% { clip: rect(34px, 9999px, 63px, 0); }
+            45% { clip: rect(81px, 9999px, 93px, 0); }
+            50% { clip: rect(52px, 9999px, 17px, 0); }
+            55% { clip: rect(73px, 9999px, 9px, 0); }
+            60% { clip: rect(47px, 9999px, 54px, 0); }
+            65% { clip: rect(6px, 9999px, 80px, 0); }
+            70% { clip: rect(63px, 9999px, 82px, 0); }
+            75% { clip: rect(47px, 9999px, 20px, 0); }
+            80% { clip: rect(56px, 9999px, 66px, 0); }
+            85% { clip: rect(37px, 9999px, 35px, 0); }
+            90% { clip: rect(59px, 9999px, 24px, 0); }
+            95% { clip: rect(67px, 9999px, 75px, 0); }
+            100% { clip: rect(36px, 9999px, 32px, 0); }
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(0, 255, 136, 0.5);
+            font-family: 'Exo 2', sans-serif;
+            opacity: 0;
+            animation: fadeIn 1s forwards 3s;
+        }
+        
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 2.2rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+            }
+            .avatar {
+                width: 100px;
+                height: 100px;
+            }
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="liquid-glass"></div>
+    <div class="scanline"></div>
+    <div class="matrix-bg" id="matrix"></div>
+    
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">SYSTEM INITIALIZING</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="content" id="content">
+            <img src="img.jpg" alt="YOAOVELO 203" class="avatar" onerror="this.src='https://placehold.co/120x120/000000/00ff88?text=YO'">
+            <h1 class="logo glitch" data-text="YOAOVELO 203">YOAOVELO 203</h1>
+            <p class="subtitle">DIGITAL ENTITY • CYBER OPERATIVE • 203</p>
+            <div class="buttons-container">
+                <a href="https://t.me/bioyoa" target="_blank" class="btn">Channel</a>
+                <a href="https://t.me/nabler" target="_blank" class="btn">Telegram</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">SECURE • ENCRYPTED • UNTRACEABLE</div>
+
+    <script>
+        // Matrix background effect
+        function createMatrix() {
+            const matrix = document.getElementById('matrix');
+            const chars = '01';
+            const fontSize = 14;
+            const columns = Math.floor(window.innerWidth / fontSize);
+            
+            for (let i = 0; i < columns; i++) {
+                const text = document.createElement('div');
+                text.className = 'matrix-text';
+                text.style.left = i * fontSize + 'px';
+                text.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                text.style.opacity = Math.random() * 0.5 + 0.3;
+                text.style.fontSize = fontSize + 'px';
+                
+                let content = '';
+                const lines = Math.floor(window.innerHeight / fontSize) + 10;
+                for (let j = 0; j < lines; j++) {
+                    content += chars.charAt(Math.floor(Math.random() * chars.length)) + '<br>';
+                }
+                text.innerHTML = content;
+                
+                matrix.appendChild(text);
+            }
+        }
+        
+        // Loading screen logic
+        function init() {
+            createMatrix();
+            
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.style.opacity = '0';
+                loadingScreen.style.visibility = 'hidden';
+                
+                setTimeout(() => {
+                    document.getElementById('content').classList.add('loaded');
+                }, 1000);
+            }, 3500);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            document.getElementById('matrix').innerHTML = '';
+            createMatrix();
+        });
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
+
